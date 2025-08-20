@@ -1,39 +1,46 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import Link from "next/link";
 
 export default function AuthPage() {
   const supabase = createClientComponentClient();
-  const [redirectUrl, setRedirectUrl] = useState('');
 
+  // State to store client-safe redirect URL
+  const [redirectUrl, setRedirectUrl] = useState("");
+
+  // Only set redirect URL on the client
   useEffect(() => {
     setRedirectUrl(`${window.location.origin}/auth/callback`);
   }, []);
 
+  // Prevent rendering until redirectUrl is set
   if (!redirectUrl) return <div>Loading...</div>;
 
   return (
     <div id="AuthPage" className="w-full min-h-screen bg-white">
-      <div className="w-full flex items-center justify-center p-5 border-b-gray-300">
-        <Link href="/" className="min-2-[170px]">
-          <img width="170" src="/images/solport.svg" />
+      {/* Header with logo */}
+      <div className="w-full flex items-center justify-center p-5 border-b border-gray-300">
+        <Link href="/" className="min-w-[170px]">
+          <img width="170" src="/images/solport.svg" alt="Solport Logo" />
         </Link>
       </div>
 
-      <div className="w-full flex items-center justify-center p-5 border-b-gray-300">
-        Login / Register
+      {/* Page title */}
+      <div className="w-full flex items-center justify-center p-5 border-b border-gray-300">
+        <h1 className="text-xl font-semibold">Login / Register</h1>
       </div>
 
-      <div className="max-w-[400px] mx-auto px-2">
+      {/* Auth component */}
+      <div className="max-w-[400px] mx-auto px-2 py-8">
         <Auth
           onlyThirdPartyProviders
           redirectTo={redirectUrl}
           supabaseClient={supabase}
-          providers={['google']}
+          providers={["google"]}
           appearance={{ theme: ThemeSupa }}
         />
       </div>
