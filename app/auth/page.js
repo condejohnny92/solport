@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -8,15 +8,12 @@ import Link from "next/link";
 
 export default function AuthPage() {
   const supabase = createClientComponentClient();
-  const [redirectTo, setRedirectTo] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  // Set redirect URL only on the client
-  useEffect(() => {
-    setRedirectTo(`${window.location.origin}/auth/callback`);
-  }, []);
+  // Only mark as mounted on the client
+  useEffect(() => setMounted(true), []);
 
-  // Prevent server-side rendering errors
-  if (!redirectTo) return null;
+  const redirectTo = mounted ? `${window.location.origin}/auth/callback` : "";
 
   return (
     <div id="AuthPage" className="w-full min-h-screen bg-white">
@@ -31,13 +28,15 @@ export default function AuthPage() {
       </div>
 
       <div className="max-w-[400px] mx-auto px-2">
-        <Auth
-          onlyThirdPartyProviders
-          redirectTo={redirectTo}
-          supabaseClient={supabase}
-          providers={["google"]}
-          appearance={{ theme: ThemeSupa }}
-        />
+        {mounted && (
+          <Auth
+            onlyThirdPartyProviders
+            redirectTo={redirectTo}
+            supabaseClient={supabase}
+            providers={["google"]}
+            appearance={{ theme: ThemeSupa }}
+          />
+        )}
       </div>
     </div>
   );
