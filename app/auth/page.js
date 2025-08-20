@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -9,16 +9,8 @@ import Link from "next/link";
 export default function AuthPage() {
   const supabase = createClientComponentClient();
 
-  // State to store client-safe redirect URL
-  const [redirectUrl, setRedirectUrl] = useState("");
-
-  // Only set redirect URL on the client
-  useEffect(() => {
-    setRedirectUrl(`${window.location.origin}/auth/callback`);
-  }, []);
-
-  // Prevent rendering until redirectUrl is set
-  if (!redirectUrl) return <div>Loading...</div>;
+  // Hardcoded redirect URL for Vercel deployment
+  const redirectUrl = "https://solport-five.vercel.app/auth/callback";
 
   return (
     <div id="AuthPage" className="w-full min-h-screen bg-white">
